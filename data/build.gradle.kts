@@ -51,4 +51,9 @@ dependencies {
 
     // OkHttp Logging Interceptor
     implementation(libs.logging.interceptor)
+
+    // room DB
+    implementation (libs.androidx.room.runtime)
+    kapt (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.ktx)
 }

@@ -19,11 +19,13 @@ class NewsListViewModel @Inject constructor(private val getTopHeadlinesUseCase: 
     private val _newsState = MutableStateFlow<UiState<List<News>>>(UiState.Loading)
     val newsState: StateFlow<UiState<List<News>>> = _newsState
 
+
     fun getTopHeadLInes(country: String) {
         viewModelScope.launch {
             getTopHeadlinesUseCase(country)
                 .onStart { _newsState.value = UiState.Loading }
-                .catch { _newsState.value = UiState.Error(it.message.toString()) }.collect {
+                .catch { _newsState.value = UiState.Error(it.message.toString()) }
+                .collect {
                     _newsState.value = UiState.Success(it)
                 }
         }

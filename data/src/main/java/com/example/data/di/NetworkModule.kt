@@ -29,9 +29,6 @@ class NetworkModule {
     fun provideNewsApiService(retrofit: Retrofit): NewsApiService =
         retrofit.create(NewsApiService::class.java)
 
-    @Provides
-    @Singleton
-    fun provideNewsMapper(): NewsMapper = NewsMapper()
 
 
 }
