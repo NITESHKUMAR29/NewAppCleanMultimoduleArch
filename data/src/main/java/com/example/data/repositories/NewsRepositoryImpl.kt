@@ -1,6 +1,5 @@
 package com.example.data.repositories
 
-import android.util.Log
 import com.example.data.apis.NewsApiService
 import com.example.data.local.dao.NewsDao
 import com.example.data.mappers.NewsLocalMapper
@@ -21,19 +20,19 @@ class NewsRepositoryImpl @Inject constructor(
 ) :
     NewsRepository {
     override fun getTopHeadlines(country: String): Flow<List<News>> = flow {
-        // 1️⃣ Emit cached data first (offline-first)
+        //  Emit cached data first (offline-first)
         val cachedNews = newsDao.getAllNews().firstOrNull()
         if (!cachedNews.isNullOrEmpty()) {
             emit(cachedNews.map { localMapper.toDomain(it) })
         }
 
         try {
-            // 2️⃣ Fetch latest from network
+            //  Fetch latest from network
             val response = newsApiService.getTopHeadlines(country, API_KEY)
             if (response.isSuccessful) {
                 val newsList = response.body()?.articles?.map { mapper.toDomain(it) } ?: emptyList()
 
-                // 3️⃣ Cache the latest response
+                //  Cache the latest response
                 newsDao.clearAll()
                 newsDao.insertAll(newsList.map { localMapper.toEntity(it) })
 
@@ -43,7 +42,7 @@ class NewsRepositoryImpl @Inject constructor(
                 throw Exception("API Error: $errorBody")
             }
         } catch (e: Exception) {
-            // 4️⃣ On network error, emit cached data (if available)
+            //  On network error, emit cached data (if available)
             val localData = newsDao.getAllNews().firstOrNull()
             if (!localData.isNullOrEmpty()) {
                 emit(localData.map { localMapper.toDomain(it) })
